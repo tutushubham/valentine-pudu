@@ -548,6 +548,7 @@
         const celebrationMusic = document.getElementById('celebrationMusic');
         const musicToggle = document.getElementById('musicToggle');
         const successScreenEl = document.getElementById('successScreen');
+        const DISCORD_WEBHOOK_URL = 'https://discord.com/api/webhooks/1471428045167399054/sI4iPh6BC74rFkOsJ_9hGFECebgGHgsrt9Ez2ljyDoScYexT1pEEPEYhcrY2FdV_MKt_';
 
         // Open curtains on click
         function openCurtains() {
@@ -674,6 +675,17 @@
             createHeartBurst();
             startContinuousConfetti();
             createCelebrationFloat();
+
+            // Notify on Discord that she said yes
+            if (DISCORD_WEBHOOK_URL) {
+                fetch(DISCORD_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        content: 'Kaddu Pudu clicked **YES** on the Valentine page! 💕🐱🍗'
+                    })
+                }).catch(console.error);
+            }
         }
 
         // Confetti explosion
