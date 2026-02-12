@@ -544,9 +544,10 @@
     </div>
 
     <script>
-        let musicPlaying = false;
         const bgMusic = document.getElementById('bgMusic');
+        const celebrationMusic = document.getElementById('celebrationMusic');
         const musicToggle = document.getElementById('musicToggle');
+        const successScreenEl = document.getElementById('successScreen');
 
         // Open curtains on click
         function openCurtains() {
@@ -562,7 +563,6 @@
                 
                 // Auto-play music
                 bgMusic.play().then(() => {
-                    musicPlaying = true;
                     musicToggle.textContent = '🔊';
                 }).catch(err => console.log('Auto-play prevented'));
             }, 1500);
@@ -571,14 +571,20 @@
         // Toggle music
         musicToggle.addEventListener('click', (e) => {
             e.stopPropagation();
-            if (musicPlaying) {
+            const anyPlaying = !bgMusic.paused || !celebrationMusic.paused;
+            const isSuccessScreen = successScreenEl.classList.contains('show');
+
+            if (anyPlaying) {
+                // Mute everything
                 bgMusic.pause();
+                celebrationMusic.pause();
                 musicToggle.textContent = '🔇';
-                musicPlaying = false;
             } else {
-                bgMusic.play();
-                musicToggle.textContent = '🔊';
-                musicPlaying = true;
+                // Turn music back on depending on screen
+                const toPlay = isSuccessScreen ? celebrationMusic : bgMusic;
+                toPlay.play().then(() => {
+                    musicToggle.textContent = '🔊';
+                }).catch(err => console.log('Play prevented'));
             }
         });
 
@@ -661,7 +667,6 @@
             
             // Stop background music and play romantic celebration music
             bgMusic.pause();
-            const celebrationMusic = document.getElementById('celebrationMusic');
             celebrationMusic.play().catch(err => console.log('Music play prevented'));
             
             createMassiveConfetti();
